@@ -1,7 +1,7 @@
 (ns ants.core)
 
-(def board ["..*.%"
-            "a?.b."])
+(def board [ [\. \. \* \. \%]
+             [\a \? \. \b \.]])
 
 (def game {:board board
            :loadtime 2000  
@@ -61,31 +61,48 @@
     ))
 
 (defn empty-board [rows cols]
-  (vec (repeat rows (apply str (repeat cols \.)))))
+  (vec (repeat rows (vec (repeat cols \.)))))
 
 (defn apply-fact [board [type r c owner]]
-  (assoc-in board [r c] type))
+  (update-in board [r c] (constantly type)))
+
+(apply-fact (empty-board 2 3) [\a 1 1 1])
+;; -> [[\. \. \.] [\. \a \.]]
 
 (defn new-board [facts rows cols]
   (reduce apply-fact (empty-board rows cols) facts))
 
 (new-board [[\a 7 9 1]] 20 10)
+;; ->
+[[\. \. \. \. \. \. \. \. \. \.]
+ [\. \. \. \. \. \. \. \. \. \.]
+ [\. \. \. \. \. \. \. \. \. \.]
+ [\. \. \. \. \. \. \. \. \. \.]
+ [\. \. \. \. \. \. \. \. \. \.]
+ [\. \. \. \. \. \. \. \. \. \.]
+ [\. \. \. \. \. \. \. \. \. \.]
+ [\. \. \. \. \. \. \. \. \. \a]
+ [\. \. \. \. \. \. \. \. \. \.]
+ [\. \. \. \. \. \. \. \. \. \.]
+ [\. \. \. \. \. \. \. \. \. \.]
+ [\. \. \. \. \. \. \. \. \. \.]
+ [\. \. \. \. \. \. \. \. \. \.]
+ [\. \. \. \. \. \. \. \. \. \.]
+ [\. \. \. \. \. \. \. \. \. \.]
+ [\. \. \. \. \. \. \. \. \. \.]
+ [\. \. \. \. \. \. \. \. \. \.]
+ [\. \. \. \. \. \. \. \. \. \.]
+ [\. \. \. \. \. \. \. \. \. \.]
+ [\. \. \. \. \. \. \. \. \. \.]]
 
 (defn dump [board]
   (apply str (interleave board (repeat \newline))))
 
-(print (dump board))
-..*.%
-a?.b.
-
+(dump board)
+;; ->
+"[\\. \\. \\* \\. \\%]
+[\\a \\? \\. \\b \\.]
+"
 
 (locations board food?)
-
-(() ([1 0] [1 3]))
-((nil nil nil nil nil) ([1 0] nil nil [1 3] nil))
-
-board
-["..*.%" "a?.b."]
-
-
-
+;; -> ([0 2])
